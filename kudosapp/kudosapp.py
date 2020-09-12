@@ -30,10 +30,19 @@ CORS(app)
 # ( ) GET /kudos/team-members/<team-member_id> Returns all kudos given to a specific team member
 
 """
+check_team_member_id
+    helper function to identify valid team member ids
+"""
+def check_team_member_id(team_member_id):
+    ids = set([team_member.id for team_member in Team_Member.query.all()])
+    if not team_member_id in ids:
+        return False
+    return True
+
+"""
 GET /kudos
     Returns all kudos which are available to the visitor  
 """
-
 @app.route("/kudos", methods=["GET"])
 def get_kudos():
     try:
@@ -58,7 +67,9 @@ def post_new_kudo():
         team_member_id=request.json.get("team_member_id", 1),
         date=request.json.get("date", "2020-01-01"),
     )
-    print(newKudo.long())
+    if not check_team_member_id(newKudo.team_member_id):
+        # abort with bad request
+        abort(400)
     try:
         Kudo.insert(newKudo)
     except exc.SQLAlchemyError:
@@ -69,6 +80,20 @@ def post_new_kudo():
                     "success": True,
                     "kudos": newKudo.short()
                     })
+
+@app.route("/team-members", methods=["GET"])
+def get_team_members():
+    try:
+        team_members = [team_member.display() for team_member in Team_Member.query.all()]
+    except exc.SQLAlchemyError:
+        # return internal server error if couldn't add record
+        abort(500)
+
+    return jsonify({
+                    "success": True,
+                    "team_members": team_members
+                    })
+
 
 @app.route("/team-members", methods=["POST"])
 def post_new_team_member():
