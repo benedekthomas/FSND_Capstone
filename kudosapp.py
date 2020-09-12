@@ -39,6 +39,14 @@ def check_team_member_id(team_member_id):
         return False
     return True
 
+@app.route("/", methods=["GET"])
+def health_check():
+    return jsonify({
+        "success": True,
+        "message": "Everything alright"
+    })
+
+
 @app.route("/kudos", methods=["GET"])
 def get_kudos():
     """
@@ -54,7 +62,6 @@ def get_kudos():
                     "success": True,
                     "kudos": kudos
                     })
-
 
 """
 POST /kudos
@@ -79,6 +86,7 @@ def post_new_kudo():
                     "success": True,
                     "kudos": newKudo.short()
                     })
+
 
 # ######## TEAM MEMBER ENDPOINTS ########
 @app.route("/team-members", methods=["GET"])
