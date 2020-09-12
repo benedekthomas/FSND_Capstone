@@ -3,10 +3,6 @@ from sqlalchemy import Column, String, Integer
 from flask_sqlalchemy import SQLAlchemy
 import json
 
-os.environ['DB_NAME'] = "KUDOS_DB"
-os.environ['DB_USER'] = "benedekthomas"
-os.environ['DB_PSW'] = "password1"
-
 db_name = os.getenv('DB_NAME')
 db_user = os.getenv('DB_USER')
 db_psw = os.getenv('DB_PSW')

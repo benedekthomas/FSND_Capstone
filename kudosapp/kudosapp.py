@@ -19,32 +19,31 @@ CORS(app)
 #  2 - implemented, tested in Postman
 #  3 - implmeneted, tested with Pytest
 
-# ( ) POST /kudos/ Record a new kudos
+# (2) POST /kudos/ Record a new kudos
 # (1) GET /kudos/ Returns all kudos which are available to the visitor
 # ( ) GET /kudos/<kudos_id> Returns a specific kudos with id <kudos_id>
 # ( ) PATCH /kudos/<kudos_id> Updates the content of a specific kudos Returns the updated kudos
 # ( ) DELETE /kudos/<kudos_id> Deletes a specific kudos Returns the id of the deleted kudos
-# ( ) GET /team-members/ Returns a list of all team members
-# (1) POST /team-members/ Manager can add a team member.
-# ( ) DELETE /team-members/<team-member_id> Delete a specific team member
+# (2) GET /team-members/ Returns a list of all team members
+# (2) POST /team-members/ Manager can add a team member.
+# (?) DELETE /team-members/<team-member_id> Delete a specific team member
 # ( ) GET /kudos/team-members/<team-member_id> Returns all kudos given to a specific team member
 
-"""
-check_team_member_id
-    helper function to identify valid team member ids
-"""
 def check_team_member_id(team_member_id):
+    """
+    check_team_member_id
+        helper function to identify valid team member ids
+    """
     ids = set([team_member.id for team_member in Team_Member.query.all()])
     if not team_member_id in ids:
         return False
     return True
 
-"""
-GET /kudos
-    Returns all kudos which are available to the visitor  
-"""
 @app.route("/kudos", methods=["GET"])
 def get_kudos():
+    """
+    Returns all kudos which are available to the visitor  
+    """
     try:
         kudos = [kudo.short() for kudo in Kudo.query.all()]
     except exc.SQLAlchemyError:
@@ -81,8 +80,14 @@ def post_new_kudo():
                     "kudos": newKudo.short()
                     })
 
+# ######## TEAM MEMBER ENDPOINTS ########
 @app.route("/team-members", methods=["GET"])
 def get_team_members():
+    """
+    GET endpoint
+    returns all team members as a list of dicts
+    team members are in display() format
+    """
     try:
         team_members = [team_member.display() for team_member in Team_Member.query.all()]
     except exc.SQLAlchemyError:
@@ -94,9 +99,12 @@ def get_team_members():
                     "team_members": team_members
                     })
 
-
 @app.route("/team-members", methods=["POST"])
 def post_new_team_member():
+    """
+    POST endpoint
+    record a new team member
+    """
     newTeamMember = Team_Member(
         name=request.json.get("name", "default=Missing name"),
         position=request.json.get("position", ""),
@@ -104,14 +112,33 @@ def post_new_team_member():
 
     try:
         Team_Member.insert(newTeamMember)
-    except exc.SQLAlchemyError as error:
+    except exc.SQLAlchemyError:
         # return internal server error if couldn't add record
-        abort(500, error)
+        abort(500)
 
     return jsonify({
                     "success": True,
-                    "kudos": newTeamMember.display()
+                    "team-member": newTeamMember.display()
                     }) 
+
+# Deleting a team member raises errors due the kudos remaining in the DB and ids are being nulled.
+# @app.route("/team-members/<int:team_member_id>", methods=["DELETE"])
+# def delete_team_member(team_member_id):
+#     team_member = Team_Member.query.filter_by(id = team_member_id).one_or_none()
+
+#     # abort for team members which are not in the DB
+#     if team_member == None:
+#         abort(404)
+#     try:
+#         team_member.delete()
+#     except exc.SQLAlchemyError as error:
+#         abort(500)
+
+#     return jsonify({
+#                     "success": True,
+#                     "deleted": team_member.display()
+#                     })
+
 
 
 # """
