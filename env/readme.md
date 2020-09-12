@@ -17,7 +17,10 @@ Contains a the stop commands for the postgres container
 docker stop PGS_Server
 ```
 
-### SETUP THE DATABASE - `<set_db.sh>`
+### Environment Variables
+Certain environment variables need to be set for the database connection to function
 ```
-CREATEDB -h 127.0.0.1 -U <your_user> <DB_NAME>
+DB_NAME = name of the database
+DB_USER = authorized user
+DB_PSW = database password
 ```
