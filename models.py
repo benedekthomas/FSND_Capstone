@@ -4,15 +4,17 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 
 # remove once deployed
-os.environ['DB_NAME'] = "KUDOS_DB"
-os.environ['DB_USER'] = "benedekthomas"
-os.environ['DB_PSW'] = "password1"
+# os.environ['DB_NAME'] = "KUDOS_DB"
+# os.environ['DB_USER'] = "benedekthomas"
+# os.environ['DB_PSW'] = "password1"
 
-db_name = os.getenv('DB_NAME')
-db_user = os.getenv('DB_USER')
-db_psw = os.getenv('DB_PSW')
-db_host = 'localhost:5432'
-database_URI = "postgresql://{}:{}@{}/{}".format(db_user, db_psw, db_host, db_name)
+# db_name = os.getenv('DB_NAME')
+# db_user = os.getenv('DB_USER')
+# db_psw = os.getenv('DB_PSW')
+# db_host = 'localhost:5432'
+# database_URI = "postgresql://{}:{}@{}/{}".format(db_user, db_psw, db_host, db_name)
+database_URI = 'postgres://lpaukunowaiqwp:d1f398807a2f51cce8695c8aa9074e875a9e9b2f9274d045b37fb97aebbdd081@ec2-54-217-206-236.eu-west-1.compute.amazonaws.com:5432/d3mf6dheslmgr0
+'
 
 db = SQLAlchemy()
 
