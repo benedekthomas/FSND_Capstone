@@ -1,1 +1,1 @@
-worker: gunicorn kudosapp:app
+web: gunicorn kudosapp:app
