@@ -4,8 +4,8 @@ from sqlalchemy import exc
 import json
 from flask_cors import CORS
 
-from .database.models import db_drop_and_create_all, setup_db, Kudo, Team_Member
-from .auth.auth import AuthError, requires_auth
+from database.models import db_drop_and_create_all, setup_db, Kudo, Team_Member
+from auth.auth import AuthError, requires_auth
 
 app = Flask(__name__)
 setup_db(app)
@@ -90,7 +90,7 @@ def get_team_members():
     """
     try:
         team_members = [team_member.display() for team_member in Team_Member.query.all()]
-    except exc.SQLAlchemyError:
+    except exc.SQLAlchemyError as error:
         # return internal server error if couldn't add record
         abort(500)
 
