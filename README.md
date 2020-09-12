@@ -35,10 +35,10 @@ Capstone project in Udacity Fullstack Web Developer Nanodegree.
 Representation of a feedback with the fields
 
 ```
-kudos_id - unique id
-kudos - String, literal description of the kudos
-team-member - foreign key of the team member
-date - timestamp
+id - unique id
+text - String, literal description of the kudos
+team_member_id - foreign key of the team member
+date - date of entry in literal format
 ```
 
 ### Context

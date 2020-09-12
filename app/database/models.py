@@ -34,15 +34,15 @@ def db_drop_and_create_all():
 Kudos
     a persistent Kudos entry, extends the base SQLAlchemy Model
 '''
-class Drink(db.Model):
+class Kudos(db.Model):
     # Autoincrementing, unique primary key
     id = Column(Integer(), primary_key=True)
     # String Kudos
-    kudos_text = Column(String(80))
+    text = Column(String(200))
     # Integer, foreign key reference to team member
     team_member_id = Column(Integer, db.ForeignKey("TeamMember.id"), nullable=False)
-    # Date, stores the entry date in literal form
-    date =  Column(String(180), nullable=True)
+    # Date, stores the entry date in YYYY-MM-DD form
+    date =  Column(String(10), nullable=True)
 
     '''
     short()
@@ -51,7 +51,7 @@ class Drink(db.Model):
     def short(self):
         return {
             'id': self.id,
-            'kudos': self.kudos_text,
+            'kudos': self.text,
         }
 
     '''
@@ -61,7 +61,7 @@ class Drink(db.Model):
     def long(self):
         return {
             'id': self.id,
-            'kudos': self.kudos_text,
+            'kudos': self.text,
             'team_member': self.team_member,
             'date': self.date
         }
@@ -72,7 +72,7 @@ class Drink(db.Model):
         the model must contain a kudos text
         the model must contain a valid team_member_id
         EXAMPLE
-            kudos = Kudos(kudos_text=req_kudos_text, team_member_id=req_team_member_id)
+            kudos = Kudos(text=req_text, team_member_id=req_team_member_id)
             kudos.insert()
     '''
     def insert(self):
@@ -82,9 +82,9 @@ class Drink(db.Model):
     '''
     delete()
         deletes a new model into a database
-        the model must exist in the database
+        deletes an existing model from the database
         EXAMPLE
-            kudos = Kudos(kudos_text=req_kudos_text, team_member_id=req_team_member_id)
+            kudos = Kudos(text=req_text, team_member_id=req_team_member_id)
             kudos.delete()
     '''
     def delete(self):
@@ -97,7 +97,7 @@ class Drink(db.Model):
         the model must exist in the database
         EXAMPLE
             kudos = Kudos.query.filter(Kudos.id == id).one_or_none()
-            kudos.kudos_text = 'You are great!'
+            kudos.text = 'You are great!'
             kudos.update()
     '''
     def update(self):
@@ -105,3 +105,65 @@ class Drink(db.Model):
 
     def __repr__(self):
         return json.dumps(self.short())
+
+
+'''
+Team_Member
+    a persistent Team_Member entry, extends the base SQLAlchemy Model
+'''
+class Team_Member(db.Model):
+    # Autoincrementing, unique primary key
+    id = Column(Integer(), primary_key=True)
+    # String, name of the team member
+    name = Column(String(120), nullable=False)
+    # String, work position of the team member
+    position = Column(String(80))
+
+    '''
+    display()
+        returns the complete representation of the model entry
+    '''
+    def display(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'position': self.position
+        }
+
+    '''
+    insert()
+        inserts a new model into a database
+        the model must contain a name
+        EXAMPLE
+            team_member = Team_Member(name=req_name, position=position)
+            team_member.insert()
+    '''
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    '''
+    delete()
+        deletes an existing model from the database
+        the model must exist in the database
+        EXAMPLE
+            team_member = Team_Member(name=req_name, position=position)
+            team_member.delete()
+    '''
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    '''
+    update()
+        updates an existing model in the database
+        EXAMPLE
+            team_member = Team_Member.query.filter(Team_Member.id == id).one_or_none()
+            team_member.position = 'CEO'
+            team_member.update()
+    '''
+    def update(self):
+        db.session.commit()
+
+    def __repr__(self):
+        return json.dumps(self.display())
