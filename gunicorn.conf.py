@@ -1,7 +1,8 @@
 import os
 
-bind = '0.0.0.0'
+bind = "127.0.0.1:8000"
 workers = 3
 debug = True
-logfile = './debug.log'
-loglevel = 'debug'
+logfile = "-"
+logformat = "STRING"
+loglevel = "debug"
