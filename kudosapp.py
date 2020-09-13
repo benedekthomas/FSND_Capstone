@@ -111,7 +111,8 @@ def get_kudos(jwt):
                     })
 
 @app.route("/kudos/<int:kudo_id>", methods=["GET"])
-def get_one_kudo(kudo_id):
+@requires_auth("read:kudos")
+def get_one_kudo(jwt, kudo_id):
     kudo = Kudo.query.filter_by(id=kudo_id).one_or_none()
     if kudo is None:
         abort(404)
@@ -122,7 +123,8 @@ def get_one_kudo(kudo_id):
                     })
 
 @app.route("/kudos/<int:kudo_id>", methods=["PATCH"])
-def patch_one_kudo(kudo_id):
+@requires_auth("patch:kudos")
+def patch_one_kudo(jwt, kudo_id):
     kudo = Kudo.query.filter_by(id=kudo_id).one_or_none()
     if kudo is None:
         abort(404)
@@ -154,7 +156,8 @@ def patch_one_kudo(kudo_id):
 # .............
 # Team Member Endpoints
 @app.route("/team-members", methods=["GET"])
-def get_team_members():
+@requires_auth("get:team-members")
+def get_team_members(jwt):
     """
     GET endpoint
     returns all team members as a list of dicts
@@ -172,7 +175,8 @@ def get_team_members():
                     })
 
 @app.route("/team-members", methods=["POST"])
-def post_new_team_member():
+@requires_auth("create:team-member")
+def post_new_team_member(jwt):
     """
     POST endpoint
     record a new team member
@@ -198,7 +202,8 @@ def post_new_team_member():
                     }), 201
 
 @app.route("/team-members/<int:team_member_id>", methods=["DELETE"])
-def delete_team_member(team_member_id):
+@requires_auth("delete:team-member")
+def delete_team_member(jwt, team_member_id):
     team_member = Team_Member.query.filter_by(id = team_member_id).one_or_none()
     if team_member is not None:
         kudos = [kudo.short() for kudo in team_member.kudos]
@@ -218,7 +223,8 @@ def delete_team_member(team_member_id):
                     })
 
 @app.route("/kudos/team-members/<int:team_member_id>", methods=["GET"])
-def get_all_kudos_of_a_team_member(team_member_id):
+@requires_auth("read:kudos")
+def get_all_kudos_of_a_team_member(jwt, team_member_id):
     team_member = Team_Member.query.filter_by(id=team_member_id).one_or_none()
     if team_member is None:
         abort(404)
