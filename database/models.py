@@ -38,7 +38,7 @@ class Team_Member(db.Model):
     # String, work position of the team member
     position = Column(String(80))
     # Definition of the kudoses relationship btw team member (who got the kudos) and the kudos
-    kudos = db.relationship("Kudo", backref="kudos")
+    kudos = db.relationship("Kudo", backref="kudos", cascade="all,delete")
 
     '''
     display()
