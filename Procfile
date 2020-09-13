@@ -1,1 +1,1 @@
-web: gunicorn -c gunicorn.conf.py kudosapp:app
+web: gunicorn kudosapp:app
