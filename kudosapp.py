@@ -7,6 +7,8 @@ from sqlalchemy import exc
 from database.models import db_drop_and_create_all, setup_db, Kudo, Team_Member
 
 app = Flask(__name__)
+
+# for logging, decide later what to do with this
 try:
     setup_db(app)
     print('db setup worked')
@@ -21,6 +23,29 @@ def health_check():
         "success": True,
         "message": "Server running"
     })
+
+
+@app.route("/team-members", methods=["POST"])
+def post_new_team_member():
+    """
+    POST endpoint
+    record a new team member
+    """
+    newTeamMember = Team_Member(
+        name=request.json.get("name", "default=Missing name"),
+        position=request.json.get("position", ""),
+    )
+
+    try:
+        Team_Member.insert(newTeamMember)
+    except exc.SQLAlchemyError:
+        # return internal server error if couldn't add record
+        abort(500)
+
+    return jsonify({
+                    "success": True,
+                    "team-member": newTeamMember.display()
+                    }) 
 
 
 if __name__ == '__main__':
