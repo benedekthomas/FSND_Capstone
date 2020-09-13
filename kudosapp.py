@@ -8,7 +8,7 @@ from flask import Flask, request, jsonify, abort
 # from auth.auth import AuthError, requires_auth
 
 app = Flask(__name__)
-setup_db(app)
+# setup_db(app)
 # CORS(app)
 
 # db_drop_and_create_all()
