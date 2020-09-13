@@ -44,8 +44,8 @@ def index():
     auth0_domain = "fsndbtamas.eu.auth0.com"
     client_id = "mC5F8kIqdfb7sLgU4N6aPHAO1j3y3Iiw"
     audience = "https://kudos-app-auth/"
-    callback_URL = "http://0.0.0.0:5000/"
-    # callback_URL = "https://bt-kudos-app.herokuapp.com/"
+    # callback_URL = "http://0.0.0.0:5000/"
+    callback_URL = "https://bt-kudos-app.herokuapp.com/"
 
     link =  'https://' + \
             auth0_domain + '/authorize?' + \
@@ -224,7 +224,7 @@ def delete_team_member(jwt, team_member_id):
 
 @app.route("/kudos/team-members/<int:team_member_id>", methods=["GET"])
 @requires_auth("read:kudos")
-def get_all_kudos_of_a_team_member(jwt, team_member_id):
+def get_all_kudos_of_a_team_member(jwt,team_member_id):
     team_member = Team_Member.query.filter_by(id=team_member_id).one_or_none()
     if team_member is None:
         abort(404)
