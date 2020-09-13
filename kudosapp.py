@@ -2,7 +2,7 @@ import os
 import json
 import sys
 
-from flask import Flask, request, jsonify, abort
+from flask import Flask, render_template, request, jsonify, abort
 from sqlalchemy import exc
 from database.models import db_drop_and_create_all, setup_db, Kudo, Team_Member
 
@@ -38,11 +38,21 @@ sys.stdout.flush()
 
 
 @app.route("/", methods=["GET"])
-def health_check():
-    return jsonify({
-                    "success": True,
-                    "message": "Server running"
-                    })
+def index():
+    auth0_domain = "fsndbtamas.eu.auth0.com"
+    client_id = "mC5F8kIqdfb7sLgU4N6aPHAO1j3y3Iiw"
+    audience = "https://kudos-app-auth/"
+    callback_URL = "http://0.0.0.0:5000/"
+    # callback_URL = "https://bt-kudos-app.herokuapp.com/"
+
+    link =  'https://' + \
+            auth0_domain + '/authorize?' + \
+            'audience=' + audience + '&' + \
+            'response_type=token&' + \
+            'client_id=' + client_id + '&' + \
+            'redirect_uri=' + callback_URL
+    
+    return render_template('pages/index.html', login_link = link)
 
 # .............
 # Kudo Endpoints

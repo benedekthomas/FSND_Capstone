@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 AUTH0_DOMAIN = 'bt-fsnd.eu.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'https://coffeeshop/auths'
+API_AUDIENCE = 'https://kudos-app-auth/'
 
 ## AuthError Exception
 '''

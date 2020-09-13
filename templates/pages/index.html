@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>  
+  <meta charset="utf-8" />
+  <title>Kudos App</title>
+
+  <link type="text/css" rel="stylesheet" href="/templates/css/bootstrap-theme.css">
+  <link type="text/css" rel="stylesheet" href="/templates/css/main.css">
+</head>
+
+<body>
+  <div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <input type="button" onclick="location.href='{{ login_link|safe }}';" value="Login"/>
+        <input type="button" onclick="location.href='';" value="Logout"/>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div><p>To access API endpoints use the following token</p></div>
+    <div id="JWT"></div>
+    <div><p>Endpoints accessible to you:</p></div>
+  </div>
+</body>
+<script type="text/javascript">
+  const JWTS_LOCAL_KEY = 'JWTS_LOCAL_KEY';
+
+  function checkJWT() {
+      JWT_active = false;
+      // check if there is a stored JWT in local storage
+      if (localStorage.getItem(JWTS_LOCAL_KEY)) {
+        this.token = localStorage.getItem(JWTS_LOCAL_KEY);
+      } else {
+        const fragment = window.location.hash.substr(1).split('&')[0].split('=');
+        // check if the fragment includes the access token
+        if (fragment[0] === 'access_token' ) {
+            // add the access token to the jwt
+            this.token = fragment[1];
+            // save jwts to localstore
+            localStorage.setItem(JWTS_LOCAL_KEY, this.token);
+            JWT_active = true;
+          }
+        }
+      if (JWT_active) {
+        document.getElementById('JWT').innerHTML = this.token;
+      }
+    }
+
+  window.onload = checkJWT();
+</script>
+
+</html>
