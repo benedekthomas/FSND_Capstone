@@ -98,7 +98,7 @@ def get_team_members():
     """
     try:
         team_members = [team_member.display() for team_member in Team_Member.query.all()]
-    except exc.SQLAlchemyError as error:
+    except exc.SQLAlchemyError:
         # return internal server error if couldn't add record
         abort(500)
 
@@ -305,4 +305,7 @@ def auth_error(error):
                     "error": error.status_code,
                     "message": error.error.get("description", "unknown error"),
                     }), error.status_code
-                   
+
+if __name__ == '__main__':
+    # Threaded option to enable multiple instances for multiple user access support
+    app.run(threaded=True, port=5000)  
