@@ -5,7 +5,7 @@ from jose import jwt
 from urllib.request import urlopen
 
 
-AUTH0_DOMAIN = 'bt-fsnd.eu.auth0.com'
+AUTH0_DOMAIN = 'fsndbtamas.eu.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'https://kudos-app-auth/'
 

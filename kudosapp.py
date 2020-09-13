@@ -6,6 +6,8 @@ from flask import Flask, render_template, request, jsonify, abort
 from sqlalchemy import exc
 from database.models import db_drop_and_create_all, setup_db, Kudo, Team_Member
 
+from auth.auth import AuthError, requires_auth
+
 app = Flask(__name__)
 
 # for logging, decide later what to do with this
@@ -67,7 +69,8 @@ def check_team_member_id(team_member_id):
     return True
 
 @app.route("/kudos", methods=["POST"])
-def post_new_kudo():
+@requires_auth("create:kudos")
+def post_new_kudo(jwt):
     """
     POST /kudos
     """
@@ -91,7 +94,8 @@ def post_new_kudo():
                     }), 201
 
 @app.route("/kudos", methods=["GET"])
-def get_kudos():
+@requires_auth("read:kudos")
+def get_kudos(jwt):
     """
     Returns all kudos which are available to the visitor  
     """
@@ -226,6 +230,14 @@ def get_all_kudos_of_a_team_member(team_member_id):
                     "team-member": team_member.display(),
                     "kudos": kudos
                   })
+
+@app.errorhandler(AuthError)
+def auth_error(error):
+    return jsonify({
+                    "success": False,
+                    "error": error.status_code,
+                    "message": error.error.get("description", "unknown error"),
+                    }), error.status_code
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances

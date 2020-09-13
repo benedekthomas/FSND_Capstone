@@ -2,26 +2,45 @@
 <html lang="en">
 
 <head>  
-  <meta charset="utf-8" />
-  <title>Kudos App</title>
 
-  <link type="text/css" rel="stylesheet" href="/templates/css/bootstrap-theme.css">
-  <link type="text/css" rel="stylesheet" href="/templates/css/main.css">
+<meta charset="utf-8" />
+
+<!-- meta -->
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- /meta -->
+
+<title>Kudos App</title>
+
+<!-- style -->
+<style>
+  active {
+    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  }
+  
+  inactive {
+    visibility: hidden; 
+  }
+</style>
+
 </head>
 
 <body>
   <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
-        <input type="button" onclick="location.href='{{ login_link|safe }}';" value="Login"/>
-        <input type="button" onclick="location.href='';" value="Logout"/>
+        <input type="button" id="login-btn" onclick="location.href='{{ login_link|safe }}';" value="Login"/>
+        <input type="button" id="logout-btn" onclick=logout(); value="Logout"/>
       </div>
     </div>
   </div>
-  <div>
+  <div id="JWT_container" style="visibility: hidden;">
     <div><p>To access API endpoints use the following token</p></div>
     <div id="JWT"></div>
     <div><p>Endpoints accessible to you:</p></div>
+    <div id="JWT_decoded"></div>
   </div>
 </body>
 <script type="text/javascript">
@@ -31,21 +50,42 @@
       JWT_active = false;
       // check if there is a stored JWT in local storage
       if (localStorage.getItem(JWTS_LOCAL_KEY)) {
+        JWT_active = true;
         this.token = localStorage.getItem(JWTS_LOCAL_KEY);
       } else {
         const fragment = window.location.hash.substr(1).split('&')[0].split('=');
         // check if the fragment includes the access token
         if (fragment[0] === 'access_token' ) {
-            // add the access token to the jwt
-            this.token = fragment[1];
-            // save jwts to localstore
-            localStorage.setItem(JWTS_LOCAL_KEY, this.token);
-            JWT_active = true;
-          }
+          JWT_active = true;
+          // add the access token to the jwt
+          this.token = fragment[1];
+          // save jwts to localstore
+          localStorage.setItem(JWTS_LOCAL_KEY, this.token);
         }
+      }
       if (JWT_active) {
         document.getElementById('JWT').innerHTML = this.token;
+        document.getElementById('JWT_decoded').innerHTML = parseJWT(this.token).permissions;
+        document.getElementById('JWT_container').style.visibility = 'visible';
+        document.getElementById('login-btn').style.visibility = 'hidden';
       }
+    }
+
+    // parseJWT function courtesy of @peheje and @imgx64
+    // https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript-without-using-a-library
+    function parseJWT (token) {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      return JSON.parse(jsonPayload);
+    };
+
+    function logout () {
+      localStorage.clear();
+      window.location.href='/';
     }
 
   window.onload = checkJWT();
