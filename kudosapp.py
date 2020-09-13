@@ -78,7 +78,7 @@ def post_new_kudo():
     return jsonify({
                     "success": True,
                     "kudos": newKudo.long()
-                    })
+                    }), 201
 
 @app.route("/kudos", methods=["GET"])
 def get_kudos():
@@ -181,7 +181,7 @@ def post_new_team_member():
     return jsonify({
                     "success": True,
                     "team-member": newTeamMember.display()
-                    })
+                    }), 201
 
 @app.route("/team-members/<int:team_member_id>", methods=["DELETE"])
 def delete_team_member(team_member_id):
