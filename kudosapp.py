@@ -25,6 +25,24 @@ def health_check():
     })
 
 
+@app.route("/team-members", methods=["GET"])
+def get_team_members():
+    """
+    GET endpoint
+    returns all team members as a list of dicts
+    team members are in display() format
+    """
+    try:
+        team_members = [team_member.display() for team_member in Team_Member.query.all()]
+    except exc.SQLAlchemyError:
+        # return internal server error if couldn't add record
+        abort(500)
+
+    return jsonify({
+                    "success": True,
+                    "team_members": team_members
+                    })
+
 @app.route("/team-members", methods=["POST"])
 def post_new_team_member():
     """
