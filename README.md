@@ -1,7 +1,45 @@
 # FSND_Capstone
 Capstone project in Udacity Fullstack Web Developer Nanodegree.
 
+
 # Project Description
+## Project Motivation
+Kudos app aims to support the positive feedback, kudos culture in a team. It is a lightweight solution to collect and organiza all kudos given within a team.
+
+## UI
+In the scope of the project the focus lay on the backend, nevertheless to facilitate the login and API usage process a simple UI was created rendering only the '/' route.
+
+The UI enables Login via Auth0, displays the Access JWT and the permissions assigned to the user.
+The permissions are listed with the applicable endpoints as well.
+
+## Roles and Permissions
+The API handles 2 distinct roles:
+- manager
+- team-member
+
+The manager role can administer the team-members in the database. Team-member users are not automatically registered in the database.
+
+### Team member role
+Team members have the permission to:
+`<read:kudos>` read kudos either individual or multiples
+`<create:kudos>` create persisten kudo addressed to an existing team member
+`<get:team-members>` check the list of existing team members
+
+
+### Manager Role
+Managers have the permissions to:
+
+```
+get:kudos
+create:kudos
+get:team-members
+
+patch:kudos
+delete:kudos
+create:team-member
+delete:team-member
+```
+
 ## API Architecture
 1. POST /kudos/ 
   Record a new kudos
@@ -50,25 +88,3 @@ name - name of the team member
 position - position of the team member
 ```
 
-## Roles and Permissions
-### Team member role
-team members have the permission to:
-```
-get:kudos
-create:kudos
-get:team-members
-````
-
-### Manager Role
-Managers have the permissions to:
-
-```
-get:kudos
-create:kudos
-get:team-members
-
-patch:kudos
-delete:kudos
-create:team-member
-delete:team-member
-```
