@@ -39,22 +39,20 @@ sys.stdout.flush()
 
 @app.route("/", methods=["GET"])
 def index():
-    auth0_domain = "fsndbtamas.eu.auth0.com"
-    client_id = "mC5F8kIqdfb7sLgU4N6aPHAO1j3y3Iiw"
-    audience = "https://kudos-app-auth/"
-    # callback_URL = "http://0.0.0.0:5000/"
-    # callback_URL = "https://bt-kudos-app.herokuapp.com/"
-    callback_URL = os.environ['CALLBACK_URL']
+    AUTH0_DOMAIN = os.environ['AUTH0_DOMAIN']
+    AUTH0_CLIENT_ID = os.environ['AUTH0_CLIENT_ID']
+    API_AUDIENCE = os.environ['API_AUDIENCE']
+    CALLBACK_URL = os.environ['CALLBACK_URL']
 
     data = {}
     link =  'https://' + \
-            auth0_domain + '/authorize?' + \
-            'audience=' + audience + '&' + \
+            AUTH0_DOMAIN + '/authorize?' + \
+            'audience=' + API_AUDIENCE + '&' + \
             'response_type=token&' + \
-            'client_id=' + client_id + '&' + \
-            'redirect_uri=' + callback_URL
+            'client_id=' + AUTH0_CLIENT_ID + '&' + \
+            'redirect_uri=' + CALLBACK_URL
     data.update({'login_link': link})
-    data.update({'host': callback_URL})
+    data.update({'host': CALLBACK_URL})
 
     endpoints = [
         {'permission':'create:kudos', 'endpoint': 'kudos', 'method': 'POST'},
