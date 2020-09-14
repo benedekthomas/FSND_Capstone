@@ -29,8 +29,6 @@ sys.stdout.flush()
 # (2) GET /kudos/<kudos_id> Returns a specific kudos with id <kudos_id>
 # (2) PATCH /kudos/<kudos_id> Updates the content of a specific kudos
 #       Returns the updated kudos
-# (?) DELETE /kudos/<kudos_id> Deletes a specific kudos
-#       Returns the id of the deleted kudos
 # (2) GET /team-members/ Returns a list of all team members
 # (2) POST /team-members/ Manager can add a team member.
 # (2) DELETE /team-members/<team-member_id>
@@ -45,16 +43,33 @@ def index():
     client_id = "mC5F8kIqdfb7sLgU4N6aPHAO1j3y3Iiw"
     audience = "https://kudos-app-auth/"
     # callback_URL = "http://0.0.0.0:5000/"
-    callback_URL = "https://bt-kudos-app.herokuapp.com/"
+    # callback_URL = "https://bt-kudos-app.herokuapp.com/"
+    callback_URL = os.environ['CALLBACK_URL']
 
+    data = {}
     link =  'https://' + \
             auth0_domain + '/authorize?' + \
             'audience=' + audience + '&' + \
             'response_type=token&' + \
             'client_id=' + client_id + '&' + \
             'redirect_uri=' + callback_URL
+    data.update({'login_link': link})
+    data.update({'host': callback_URL})
+
+    endpoints = [
+        {'permission':'create:kudos', 'endpoint': 'kudos', 'method': 'POST'},
+        {'permission':'read:kudos', 'endpoint': 'kudos', 'method': 'GET'},
+        {'permission':'read:kudos', 'endpoint': 'kudos/<kudo_id>', 'method': 'GET'},
+        {'permission':'read:kudos', 'endpoint': 'kudos/team-members/<team-member_id>', 'method': 'GET'},
+        {'permission':'patch:kudos', 'endpoint': 'kudos', 'method': 'PATCH'},
+        {'permission':'delete:kudos', 'endpoint': 'kudos', 'method': 'DELETE'},
+        {'permission':'get:team-members', 'endpoint': 'team-members', 'method': 'GET'},
+        {'permission':'create:team-member', 'endpoint': 'team-members', 'method': 'POST'},
+        {'permission':'delete:team-member', 'endpoint': 'team-members', 'method': 'DELETE'},
+    ]
+    data.update({'endpoints': endpoints})
     
-    return render_template('pages/index.html', login_link = link)
+    return render_template('pages/index.html', data = data)
 
 # .............
 # Kudo Endpoints

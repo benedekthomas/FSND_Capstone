@@ -13,25 +13,13 @@
 
 <title>Kudos App</title>
 
-<!-- style -->
-<style>
-  active {
-    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  }
-  
-  inactive {
-    visibility: hidden; 
-  }
-</style>
-
 </head>
 
 <body>
   <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
-        <input type="button" id="login-btn" onclick="location.href='{{ login_link|safe }}';" value="Login"/>
+        <input type="button" id="login-btn" onclick="location.href='{{ data.login_link|safe }}';" value="Login"/>
         <input type="button" id="logout-btn" onclick=logout(); value="Logout"/>
       </div>
     </div>
@@ -40,7 +28,17 @@
     <div><p>To access API endpoints use the following token</p></div>
     <div id="JWT"></div>
     <div><p>Endpoints accessible to you:</p></div>
-    <div id="JWT_decoded"></div>
+    <div>
+      <ul>
+      {% for endpoint in data.endpoints %}
+      <li class="{{ endpoint.permission }}" style="visibility: hidden;"> {{ endpoint.permission }} permission at
+        <a href="{{ data.host|safe + endpoint.endpoint }}">/{{ endpoint.endpoint }}</a>
+        method {{ endpoint.method}}
+      </li>
+      {% endfor %}
+    </ul>
+      <div id="JWT_decoded"></div>
+    </div>
   </div>
 </body>
 <script type="text/javascript">
@@ -63,9 +61,14 @@
           localStorage.setItem(JWTS_LOCAL_KEY, this.token);
         }
       }
+      // display JWT and its contents
       if (JWT_active) {
         document.getElementById('JWT').innerHTML = this.token;
-        document.getElementById('JWT_decoded').innerHTML = parseJWT(this.token).permissions;
+        for (permission of parseJWT(this.token).permissions) {
+          for (element of document.getElementsByClassName(permission)) {
+            element.style.visibility = 'visible';
+          }
+        }
         document.getElementById('JWT_container').style.visibility = 'visible';
         document.getElementById('login-btn').style.visibility = 'hidden';
       }
