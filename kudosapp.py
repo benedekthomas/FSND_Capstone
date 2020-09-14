@@ -226,7 +226,7 @@ def delete_team_member(jwt, team_member_id):
     
     try:
         team_member.delete()
-    except exc.SQLAlchemyError as error:
+    except exc.SQLAlchemyError:
         abort(500)
 
     return jsonify({

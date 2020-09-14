@@ -70,7 +70,6 @@ class TeamMemberEndpoints_TestCase(unittest.TestCase):
         """ Test accessing endpoint w authorization requiring get:team-members"""
         response = self.client().get('/team-members', headers=self.headers_mg)
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
         self.assertGreaterEqual(len(json.loads(response.data)['team-members']), 1)
     
     # #### POST TEAM-MEMBERS ENDPOINT   
@@ -254,8 +253,6 @@ class KudoEndpoints_TestCase(unittest.TestCase):
             "date": "1111-11-11"
         }
         response = self.client().patch('/kudos/1', json=kudo, headers=self.headers_mg)
-        data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
 
     
